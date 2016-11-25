@@ -6,7 +6,7 @@
 #    By: vroussea <vroussea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/24 09:55:27 by vroussea          #+#    #+#              #
-#    Updated: 2016/11/24 17:45:17 by vroussea         ###   ########.fr        #
+#    Updated: 2016/11/25 14:00:04 by vroussea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ LIBOPENCL =	-framework opencl
 MAKELIBFT =	make -C libft/
 
 # sources
-SRC_NAME =	main.c OpenCl_init.c
+SRC_NAME =	main.c OpenCl_init.c tools.c
 
 # objects
 OBJ_NAME =		$(SRC_NAME:.c=.o)
