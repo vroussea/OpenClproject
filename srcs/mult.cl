@@ -1,7 +1,17 @@
-__kernel void	mult(__global const int *a, __global const int *b, __global int *c)
+__kernel void hello(__global char* string)
 {
-	int	id;
-
-	id = get_global_id(0);
-	c[i] = a[i] * b[i];
+	string[0] = 'H';
+	string[1] = 'e';
+	string[2] = 'l';
+	string[3] = 'l';
+	string[4] = 'o';
+	string[5] = ',';
+	string[6] = ' ';
+	string[7] = 'W';
+	string[8] = 'o';
+	string[9] = 'r';
+	string[10] = 'l';
+	string[11] = 'd';
+	string[12] = '!';
+	string[13] = '\0';
 }

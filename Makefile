@@ -6,7 +6,7 @@
 #    By: vroussea <vroussea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/24 09:55:27 by vroussea          #+#    #+#              #
-#    Updated: 2016/11/25 14:00:04 by vroussea         ###   ########.fr        #
+#    Updated: 2016/11/26 13:41:19 by vroussea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,16 +74,16 @@ meteo :
 		@curl http://wttr.in/Paris
 cleanlib :
 		@$(MAKELIBFT) clean
-		@$(RM) $(OBJ) $(OBJ2)
+		@$(RM) $(OBJ)
 		@rmdir $(OBJ_DIR) 2> /dev/null || true
 clean :
 		@echo "$(CLEAR)$(TRA)$(RED)  Cleaning Object $(CLEAR)$(TRA)"
-		@$(RM) $(OBJ) $(OBJ2)
+		@$(RM) $(OBJ)
 		@rmdir $(OBJ_DIR) 2> /dev/null || true
 fclean :	clean
 		@echo "$(CLEAR)$(TRA)$(RED)  Removing Binary $(CLEAR)$(TRA)"
 		@$(MAKELIBFT) fclean
-		@$(RM) $(EXE) $(EXE2)
+		@$(RM) $(EXE)
 re :		fclean all
 .PHONY :	all, clean, fclean, re
-#.SILENT :
+.SILENT :
