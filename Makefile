@@ -6,7 +6,7 @@
 #    By: vroussea <vroussea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/24 09:55:27 by vroussea          #+#    #+#              #
-#    Updated: 2016/11/26 13:41:19 by vroussea         ###   ########.fr        #
+#    Updated: 2016/12/01 17:50:12 by vroussea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ CC =		clang
 CFLAGS =	-Wall -Wextra -Werror
 
 # binaries
-EXE =	OpenCLtest
+EXE =	OpenCltest
 
 # dir
 SRC_DIR =	srcs
@@ -47,7 +47,7 @@ LIBOPENCL =	-framework opencl
 MAKELIBFT =	make -C libft/
 
 # sources
-SRC_NAME =	main.c OpenCl_init.c tools.c
+SRC_NAME =	main.c OpenCl_init.c tools.c buff_init.c
 
 # objects
 OBJ_NAME =		$(SRC_NAME:.c=.o)
@@ -59,7 +59,7 @@ INC =		$(addprefix -I, $(INC_DIR))
 LIB =		$(addprefix $(LIBOPENCL) , $(LIBFT)) 
 
 all :		$(EXE)
-$(EXE) :	$(SRC) $(OBJ) $(LIBFT)
+$(EXE) :	$(OBJ) $(LIBFT)
 		@$(CC) $(LIBOPENCL) $(LIBFT) $(OBJ) -o $@
 		@echo "$(CLEAR)$(LIG)$(BLUE)  Compiling "$(EXE)" $(CLEAR)$(LIG)"
 $(LIBFT) :
@@ -86,4 +86,4 @@ fclean :	clean
 		@$(RM) $(EXE)
 re :		fclean all
 .PHONY :	all, clean, fclean, re
-.SILENT :
+#.SILENT :

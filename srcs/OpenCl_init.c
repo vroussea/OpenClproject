@@ -6,7 +6,7 @@
 /*   By: vroussea <vroussea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/24 16:49:32 by vroussea          #+#    #+#             */
-/*   Updated: 2016/11/26 17:45:04 by vroussea         ###   ########.fr       */
+/*   Updated: 2016/12/01 17:55:41 by vroussea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,82 +15,90 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-static char			*load_source_code()
+char				*load_source_code()
 {
 	char	*source;
 	char	*path;
 	int		fd;
 
 	path = ft_strdup("./srcs/mult.cl");
-	fd = open(path, O_RDONLY);
+	if ((fd = open(path, O_RDONLY)) == -1)
+		return (error_msg("Error with file"));
 	if (!(source = (char *)ft_memalloc(SOURCE_SIZE)))
 		return (error_msg("Error while allocting memory to source string"));
 	if ((read(fd, source, SOURCE_SIZE)) == -1)
 		return (error_msg("Error while reading .cl source code"));
 	ft_strdel(&path);
+	ft_putstr(source);
 	close(fd);
 	return (source);
 }
 
-static cl_context	get_context(cl_device_id *device)
+cl_context			get_context(cl_device_id *dvic)
 {
 	cl_platform_id	platform;
 	cl_context		context;
 	cl_int			err_code;
 
+	platform = NULL;
+	context = NULL;
 	if ((clGetPlatformIDs(1, &platform, NULL)) != CL_SUCCESS)
 		return (error_msg("Error while retrieving platform informations"));
-	if (clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &(*device), NULL)
+	if (clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, dvic, NULL)
 			!= CL_SUCCESS)
 		return (error_msg("Error while retrieving device informations"));
-	context = clCreateContext(NULL, 1, &(*device), NULL, NULL, &err_code);
+	context = clCreateContext(NULL, 1, &(*dvic), NULL, NULL, &err_code);
 	if (err_code != CL_SUCCESS)
 		return (error_msg("Error while creating context"));
 	return (context);
 }
 
-static cl_program	build_program(const char *source, cl_context context, cl_device_id device)
+cl_program			build_program(char *src, cl_context ctxt, cl_device_id dvic)
 {
-	cl_program	program;
-	cl_int		err_code;
+	cl_program		prog;
+	cl_int			err_code;
+	size_t			size;
+	char			*log;
 
-	program = clCreateProgramWithSource(context, 1, &source, NULL, &err_code);
+	prog = NULL;
+	prog = clCreateProgramWithSource(ctxt, 1, (const char **)&src,
+			NULL, &err_code);
 	if (err_code != CL_SUCCESS)
 		return (error_msg("Error while creating program with source"));
-	if (clBuildProgram(program, 1, &device, NULL, NULL, NULL) != CL_SUCCESS)
-		return (error_msg("Error while building program"));
-	return (program);
+	err_code = clBuildProgram(prog, 1, &dvic, NULL, NULL, NULL);
+	if (err_code != CL_SUCCESS)
+	{
+		clGetProgramBuildInfo(prog, dvic, CL_PROGRAM_BUILD_LOG, 0, NULL, &size);
+		log = (char*)ft_strnew(size);
+		clGetProgramBuildInfo(prog, dvic, 
+				CL_PROGRAM_BUILD_LOG, size + 1, log, NULL);
+		return (error_msg(log));
+		ft_strdel(&log);
+	}
+	ft_strdel(&src);
+	return (prog);
 }
 
-static cl_kernel	init_kernel(cl_program prog, cl_mem *memobj, cl_context context)
+cl_kernel			init_kernel(cl_program prog)
 {
 	cl_kernel	kernel;
 	cl_int		errcode;
 
-	*memobj = clCreateBuffer(context, CL_MEM_READ_WRITE, 128, NULL, &errcode);
-	if (errcode != CL_SUCCESS)
-		return (error_msg("Error while creating Buffer"));
-	kernel = clCreateKernel(prog, "hello", &errcode);
+	kernel = NULL;
+	kernel = clCreateKernel(prog, "mult", &errcode);
 	if (errcode != CL_SUCCESS)
 		return (error_msg("Error while creating Kernel"));
-	if (clSetKernelArg(kernel, 0, sizeof(cl_mem), (void*)memobj) != CL_SUCCESS)
-		return (error_msg("Error while setting kernel variable"));
 	return (kernel);
 }
 
-cl_kernel			get_kernel(cl_context *context, cl_program *prog, cl_mem *memobj)
+cl_command_queue	init_queue(cl_context ctxt, cl_device_id dvic)
 {
-	char			*source;
-	cl_kernel		kernel;
-	cl_device_id	device;
+	cl_command_queue	queue;
+	cl_int				errcode;
 
-	device = NULL;
-	kernel = NULL;
-	if (!(source = load_source_code()) ||
-	!(*context = get_context(&device)) ||
-	!(*prog = build_program(source, *context, device)) ||
-	!(kernel = init_kernel(*prog, memobj, *context)))
-		return (NULL);
-	ft_strdel(&source);
-	return (kernel);
+	queue = NULL;
+	queue = clCreateCommandQueue(ctxt, dvic, 0, &errcode);
+	if	(errcode != CL_SUCCESS)
+		return (error_msg("Error while creating command queue"));
+	return (queue);
 }
