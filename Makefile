@@ -6,7 +6,7 @@
 #    By: vroussea <vroussea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/24 09:55:27 by vroussea          #+#    #+#              #
-#    Updated: 2016/12/01 17:50:12 by vroussea         ###   ########.fr        #
+#    Updated: 2016/12/02 17:51:11 by vroussea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ LIBOPENCL =	-framework opencl
 MAKELIBFT =	make -C libft/
 
 # sources
-SRC_NAME =	main.c OpenCl_init.c tools.c buff_init.c
+SRC_NAME =	main.c opencl_init.c tools.c buff_init.c
 
 # objects
 OBJ_NAME =		$(SRC_NAME:.c=.o)
@@ -69,7 +69,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 		@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 norme :
 		@$(MAKELIBFT) norme
-		@norminette $(SRC) $(SRC2)
+		@norminette $(SRC) includes/openclproject.h
 meteo :
 		@curl http://wttr.in/Paris
 cleanlib :
